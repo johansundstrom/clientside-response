@@ -4,7 +4,7 @@ let port = process.env.PORT || 3000;
 let app = express();
 
 app.use(express.static('public'));
-app.use(express.json({limit: '10kb'}));
+app.use(express.json({limit: '10kb'})); //http://expressjs.com/en/5x/api.html#express.json
 
 app.post('/api', (request, response) => {
   console.log(request.body);
