@@ -1,0 +1,24 @@
+{
+  "name": "post-request-with-fetch",
+  "version": "1.0.0",
+  "description": "post-request-with-fetch",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johansundstrom/post-request-with-fetch.git"
+  },
+  "author": "Johan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johansundstrom/post-request-with-fetch/issues"
+  },
+  "homepage": "https://github.com/johansundstrom/post-request-with-fetch#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12"
+  }
+}
