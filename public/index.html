@@ -6,29 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>post-request-with-fetch</title>
   <script>
+    let d1
+
+    function refresh(){
+      mytime = setTimeout('display_ct()', 1000)
+    }
+
+    function display_ct(){
+      let d = new Date()
+      d1 = d.getMonth() + 1 + "/" + d.getDate() + " " + d.getFullYear(); 
+      d1 = d1 + " - " +  d.getHours( )+ ":" +  d.getMinutes() + ":" +  d.getSeconds();
+      document.getElementById('ct').innerHTML = d1;
+      refresh();
+    }
+
     async function postData(){
-      const timestamp = Date.now();
       const data = {
+        cTimestamp: d1,
         first: 'Anna',
         last: 'Andersson',
         age: 25
       };
       console.log(JSON.stringify(data));
+
       const options = {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)  //gör till JSON (sträng)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       };
+
       const response = await fetch('/api', options);
       const json = await response.json();
       console.log(json);
     };
   </script>
 </head>
-<body>
+<body onload = display_ct();>
   <h1>Post data</h1>
-  <button type="button" onclick="postData();">post</button> 
+  <button type="button" onclick = "postData();">
+    <span id = 'ct'></span>
+  </button> 
 </body>
 </html>
