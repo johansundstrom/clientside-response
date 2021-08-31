@@ -1,32 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+  <style>
+    #mapid {
+      width: 300px;
+      height: 200px;
+      margin: 1.2em;
+    }
+  </style>
   <title>post-request-with-fetch</title>
+</head>
+
+<body onload='displayTime()' ;>
+  <h1>Post data</h1>
+  <button type="button" onclick="postData();">
+    <span id='clock'></span>
+  </button>
+  <div id="mapid"></div>
+  <div id="pos"></div>
+
+
   <script>
-    let d1
+    let today, lat, lon;
 
-    function refresh(){
-      mytime = setTimeout('display_ct()', 1000)
+    function displayTime() {
+      today = new Date().toLocaleDateString('sv-SE', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        weekday: 'long'
+      })
+      document.getElementById('clock').innerHTML = today;
+      setTimeout(displayTime, 1000);
+      getLocation();
     }
 
-    function display_ct(){
-      let d = new Date()
-      d1 = d.getMonth() + 1 + "/" + d.getDate() + " " + d.getFullYear(); 
-      d1 = d1 + " - " +  d.getHours( )+ ":" +  d.getMinutes() + ":" +  d.getSeconds();
-      document.getElementById('ct').innerHTML = d1;
-      refresh();
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = 'Geolocation not supported by this browser.';
+      }
     }
 
-    async function postData(){
+
+    function showPosition(position) {
+      lat = position.coords.latitude;
+      lon = position.coords.longitude;
+
+      let myPosition = `Lat: ${lat}, Lon: ${lon}`;
+      document.getElementById('pos').textContent = myPosition;
+    }
+
+
+    async function postData() {
       const data = {
-        cTimestamp: d1,
-        first: 'Anna',
-        last: 'Andersson',
-        age: 25
+        request: 'sent',
+        timestamp: today,
+        lon: lon,
+        lat: lat
       };
+
+      mymap.setView([50, 30], mymap.getZoom());
+      const attribution = '&copy;';
       console.log(JSON.stringify(data));
 
       const options = {
@@ -36,15 +86,23 @@
       };
 
       const response = await fetch('/api', options);
-      const json = await response.json();
-      console.log(json);
+      const jsonData = await response.json();
+      console.log(jsonData);
     };
+
+    //make a map
+    //https://leafletjs.com/reference-1.7.1.html#latlng
+
+    let mymap = L.map('mapid').setView([30, 0], 1);
+    const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
+
+    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const tiles = L.tileLayer(tileUrl, { attribution });
+    tiles.addTo(mymap);
+    L.marker([59.416057090283415, 16.46865153168487]).addTo(mymap);
+
   </script>
-</head>
-<body onload = display_ct();>
-  <h1>Post data</h1>
-  <button type="button" onclick = "postData();">
-    <span id = 'ct'></span>
-  </button> 
 </body>
+
 </html>
